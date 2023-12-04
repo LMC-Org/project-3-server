@@ -1,6 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const HelpPost = require("../models/HelpPost.model");
+const User = require("../models/User.model");
+
+// ROUTES START WITH "/help-post"
+
+router.post("/addvolunteer", (req, res, next) => {
+    const {volunteerId, postId} = req.body;
+    
+    HelpPost.findByIdAndUpdate(postId, {$push: { volunteers: volunteerId }}, {new:true} )
+    .then(() => res.send({message: "Thank you for volunteering, the user has to contact you now"}))
+    .catch((err) => res.send({message: "some error ocurred, sorry"}));
+});
 
 router.get("/:helpId", (req, res, next) => {
     const { helpId } = req.params
@@ -35,8 +46,8 @@ router.get("/volunteered/:userId", (req, res, next) => {
 });
 
 router.post("/createhelp", (req, res, next) => {
-
     const { title, location, description, helpImageUrl, creator, category } = req.body;
+    let newPost = null;
     //console.log("reqbody", req.body);
     HelpPost.create({
         title,
@@ -45,14 +56,27 @@ router.post("/createhelp", (req, res, next) => {
         helpImageUrl,
         creator,
         category,
-
     })
-        .then((createdHelp) => {
-            res.json(createdHelp)
-            //console.log(createdHelp);
-            //console.log("este es el req", createdHelp);
-        })
-        .catch((err) => (err))
+    .then((createdHelp) => {
+        newPost = createdHelp;
+        res.json(createdHelp);
+        //console.log(createdHelp);
+        //console.log("este es el req", createdHelp);
+    })
+    .then(() => {
+        console.log("NEWPOST ID: ", newPost);
+        return User.findByIdAndUpdate(creator, {$push: { helpPosts: newPost._id }, $inc: {tokens: 1}}, {new: true})
+    .then((res) => console.log("Updated user: ", res.helpPosts))
+    .catch((err) => (err))
+    })
+
+    // this mongoose query $inc increments specified field by specified value (in this case increments by -1)
+    /*  User.findByIdAndUpdate(creator, {
+        $inc: {tokens: 1},
+        $push: { helpPosts: newPost._id },
+    })
+    .then((res) => console.log("Updated user: ", res))
+    .catch((err) => console.log(err)); */
 });
 
 router.put("/edithelp/:helpId", (req, res, next) => {
@@ -76,5 +100,6 @@ router.put("/edithelp/:helpId", (req, res, next) => {
     })
     .catch((err) => (err))
 });
+
 
 module.exports = router;
