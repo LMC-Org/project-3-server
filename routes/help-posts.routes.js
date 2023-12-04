@@ -39,21 +39,22 @@ router.post("/createhelp", (req, res, next) => {
 
 router.put("/edithelp/:helpId", (req, res, next) => {
     const {helpId} = req.params
-    const { title, location,description, helpImageUrl, category,selectedVolunteer,isCompleted, id } = req.body;
+    const { title, location,description, helpImageUrl, category,selectedVolunteer} = req.body;
+    console.log(req.body, req.params);
 
-    HelpPost.findByIdAndUpdate(id, {$set:{
+    HelpPost.findByIdAndUpdate(helpId, {$set:{
         title, 
         location,
         description, 
         helpImageUrl, 
         category,
         selectedVolunteer,
-        isCompleted,
+        
         }
     })
     .then((updatedHelp) => {
         res.json(updatedHelp)
-        console.log(updatedHelp);
+        console.log("UPDATE",updatedHelp);
     })
     .catch((err) => (err))
 });
