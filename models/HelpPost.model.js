@@ -18,15 +18,23 @@ const helpPostSchema = new Schema(
         helpImageUrl: {
             type: String,
         },
-        creator:  {type: Schema.Types.ObjectId, ref: "User"},
+        creator:  {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
         category: {
             type: String,
             enum: ["learning", "transport", "tech", "house-chores", "furniture", "house-repairs", "chat-sessions"],
             required: [true, "Please, choose a category."],
         },
-        volunteers: {type: Schema.Types.ObjectId, ref: "User"},
-        
-        selectedVolunteer:  {type: Schema.Types.ObjectId, ref: "User"},
+        volunteers: {
+            type: [{type: Schema.Types.ObjectId, ref: "User"}]
+        },        
+        selectedVolunteer:  {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            default: null
+        },
         
         isCompleted: {
             type: Boolean,
