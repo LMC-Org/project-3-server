@@ -73,7 +73,7 @@ router.post("/createhelp", (req, res, next) => {
     })
     .then(() => {
         console.log("NEWPOST ID: ", newPost);
-        return User.findByIdAndUpdate(creator, {$push: { helpPosts: newPost._id }, $inc: {tokens: 1}}, {new: true})
+        return User.findByIdAndUpdate(creator, {$push: { helpPosts: newPost._id }, $inc: {tokens: - 1}}, {new: true})
     .then((res) => console.log("Updated user: ", res.helpPosts))
     .catch((err) => (err))
     })
