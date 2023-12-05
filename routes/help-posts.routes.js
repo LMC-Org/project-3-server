@@ -102,4 +102,17 @@ router.put("/edithelp/:helpId", (req, res, next) => {
 });
 
 
+router.delete("/edithelp/:helpId", (req, res, next) => {
+    const {helpId} = req.params
+    HelpPost.findByIdAndDelete(helpId)
+    .then((deletedHelp) => {
+        console.log("Help deleted:", deletedHelp)
+        res.send("help deleted successfully")
+        
+    })
+})
+
+
+
+
 module.exports = router;
