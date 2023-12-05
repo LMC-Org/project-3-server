@@ -109,7 +109,6 @@ router.put("/edithelp/:helpId", (req, res, next) => {
     .catch((err) => console.log(err))
 });
 
-
 router.put("/setcompleted/:helpId", (req, res, next) => {
     const {helpId} = req.params
     HelpPost.findByIdAndUpdate(helpId, {$set: { isCompleted: true }})
@@ -120,6 +119,16 @@ router.put("/setcompleted/:helpId", (req, res, next) => {
     then(() => User.findByIdAndUpdate(creator, {$push: { helpPosts: newPost._id }, $inc: {tokens: 1}}, {new: true}))
     .catch((err) => console.log(err))
 });
+
+router.delete("/edithelp/:helpId", (req, res, next) => {
+    const {helpId} = req.params
+    HelpPost.findByIdAndDelete(helpId)
+    .then((deletedHelp) => {
+        console.log("Help deleted:", deletedHelp)
+        res.send("help deleted successfully")
+        
+    })
+})
 
 
 

@@ -15,8 +15,9 @@ router.get("/home", (req, res, next) => {
 		'createdAt': -1
 	};
 
-  HelpPost.find(filter).sort(sort)
-    .then((allPosts) => res.json(allPosts));
+	HelpPost.find(filter).sort(sort)
+		.populate("creator")
+		.then((allPosts) => res.json(allPosts));
 });
 
 module.exports = router;
