@@ -10,7 +10,7 @@ router.post("/addvolunteer", (req, res, next) => {
     
     HelpPost.findByIdAndUpdate(postId, {$push: { volunteers: volunteerId }}, {new:true} )
     .then(() => res.send({message: "Thank you for volunteering, the user has to contact you now"}))
-    .catch((err) => res.send({message: "an error ocurred, sorry"}));
+    .catch((err) => res.send({message: "some error ocurred, sorry"}));
 });
 
 router.post("/selectvolunteer", (req, res, next) => {
@@ -32,15 +32,6 @@ router.get("/:helpId", (req, res, next) => {
             res.send({foundHelpPost})
         })
         .catch((err) => ("couldn't find help post", err))
-});
-
-router.get("/setcomplete/:helpId", (req, res, next) => {
-    const { postId, selectedVolunteer } = req.params
-    HelpPost.findByIdAndUpdate(postId, {$set: {isCompleted: true}})
-    .then(() => res.send({message: "Post set as completed!"}))
-    .catch((err) => res.send({message: "an error ocurred, sorry"}));
-
-    User.findByIdAndUpdate(creator, {$push: { helpPosts: newPost._id }, $inc: {tokens: 1}}, {new: true})
 });
 
 //gets all help posts that have my id in volunteers or selected volunteers
@@ -115,8 +106,22 @@ router.put("/edithelp/:helpId", (req, res, next) => {
         res.json(updatedHelp)
         console.log("UPDATE",updatedHelp);
     })
-    .catch((err) => (err))
+    .catch((err) => console.log(err))
 });
+
+
+router.put("/setcompleted/:helpId", (req, res, next) => {
+    const {helpId} = req.params
+    HelpPost.findByIdAndUpdate(helpId, {$set: { isCompleted: true }})
+    .then((deletedHelp) => {
+        console.log("Help deleted:", deletedHelp)
+        res.send({message: "Successfully completed!"})
+    }).
+    then(() => User.findByIdAndUpdate(creator, {$push: { helpPosts: newPost._id }, $inc: {tokens: 1}}, {new: true}))
+    .catch((err) => console.log(err))
+});
+
+
 
 
 module.exports = router;
