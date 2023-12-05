@@ -12,6 +12,19 @@ router.get("/landing", (req, res, next) => {
         .catch((err) => console.error(err));
 });
 
+
+router.get("/alltestimonies", (req, res, next) => {
+    Testimony.find()
+        /* .populate("creator", "name profilePicture") */
+        .then((allTestimonies) => {
+            console.log("allTesties:",allTestimonies)
+            res.send(allTestimonies)
+        })
+        .catch((err) => {
+            console.error("No testimonies found", err)
+        });
+});
+
 // CONFIRM THE BELLOW ROUTE CODE IS CORRECT 
 router.get("/createtestimony", (req, res, next) => {
     Testimony.find().slice(4, 0)

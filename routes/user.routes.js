@@ -19,22 +19,18 @@ router.get("/:userId", (req, res, next) => {
         .catch((err) => console.log(err))
 });
 
-router.put("/edituser",fileUploader.single("profilePicture") ,(req, res, next) => {
+router.put("/edituser",(req, res, next) => {
     const { location, profilePicture, skills, description, id } = req.body;
-    if (!req.file) {
-        next(new Error("No file uploaded!"));
-        return;
-      }
     User.findByIdAndUpdate(id, {$set:{
         location,
-        profilePicture: req.file,
+        profilePicture, 
         skills,
-        description,
+        description
         }
     })
     .then((updatedUser) => {
         res.json(updatedUser)
-        console.log(updatedUser);
+        console.log("updateduser",updatedUser);
     })
     .catch((err) => (err))
 });
