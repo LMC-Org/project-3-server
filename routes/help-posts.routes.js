@@ -109,15 +109,17 @@ router.put("/edithelp/:helpId", (req, res, next) => {
     .catch((err) => console.log(err))
 });
 
-router.put("/setcompleted/:helpId", (req, res, next) => {
-    const {helpId} = req.params
-    HelpPost.findByIdAndUpdate(helpId, {$set: { isCompleted: true }})
-    .then((deletedHelp) => {
-        console.log("Help deleted:", deletedHelp)
-        res.send({message: "Successfully completed!"})
-    }).
-    then(() => User.findByIdAndUpdate(creator, {$push: { helpPosts: newPost._id }, $inc: {tokens: 1}}, {new: true}))
-    .catch((err) => console.log(err))
+router.put("/setcompleted", (req, res, next) => {
+	const {volunteerId, postId} = req.body;
+	console.log("SETCOMPLETED: volunteerID postId: ", volunteerId, postId);
+    HelpPost.findByIdAndUpdate(postId, {$set: { isCompleted: true }})
+    .then(() => User.findByIdAndUpdate(volunteerId, {$inc: {tokens: 1}}, {new: true}))
+	.then((foundUser) => console.log("foundUser: ", foundUser))
+    .then(() => res.send({message: "Successfully completed!"}))
+    .catch((err) => {
+		console.error(err);
+		res.status(500).send({message: "Sorry, an error ocurred."});
+	})
 });
 
 router.delete("/edithelp/:helpId", (req, res, next) => {
@@ -125,7 +127,7 @@ router.delete("/edithelp/:helpId", (req, res, next) => {
     HelpPost.findByIdAndDelete(helpId)
     .then((deletedHelp) => {
         console.log("Help deleted:", deletedHelp)
-        res.send("help deleted successfully")
+        res.send({message: "help deleted successfully"});
         
     })
 })
