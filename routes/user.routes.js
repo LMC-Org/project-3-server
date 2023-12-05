@@ -11,8 +11,8 @@ router.get("/:userId", (req, res, next) => {
     User.findById(id)
         .populate("helpPosts")
         .then((user) => {
-            const { tokens, helpPosts, _id, email, name, profilePicture, testimonies, description, location, skills } = user;
-            res.send({ tokens, helpPosts, _id, email, name, profilePicture, testimonies, description, location, skills });
+            const { tokens, helpPosts, _id, email, phone, name, profilePicture, testimonies, description, location, skills } = user;
+            res.send({ tokens, helpPosts, _id, email, phone, name, profilePicture, testimonies, description, location, skills });
             // console.log(user)
         })
         .catch((err) => console.log(err))

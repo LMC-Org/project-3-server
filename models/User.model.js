@@ -10,6 +10,7 @@ const userSchema = new Schema(
       trim: true,
       validate: {validator: (v) => {return /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(v);},message: props => `${props.value} is not a valid email address!`}
     },
+    phone: String,
     password: {
       type: String,
       required: [true, "Password is required."],
