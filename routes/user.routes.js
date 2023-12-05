@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const User = require("../models/User.model");
-const fileUploader = require("../config/cloudinary.config");
-
+// const fileUploader = require("../config/cloudinary.config");
 
 router.get("/:userId", (req, res, next) => {
     const id = req.params.userId;
@@ -19,7 +18,9 @@ router.get("/:userId", (req, res, next) => {
         .catch((err) => console.log(err))
 });
 
+
 router.put("/edituser",(req, res, next) => {
+
     const { location, profilePicture, skills, description, id } = req.body;
     User.findByIdAndUpdate(id, {$set:{
         location,
