@@ -13,6 +13,14 @@ router.post("/addvolunteer", (req, res, next) => {
     .catch((err) => res.send({message: "some error ocurred, sorry"}));
 });
 
+router.post("/selectvolunteer", (req, res, next) => {
+    const {volunteerId, postId} = req.body;
+    
+    HelpPost.findByIdAndUpdate(postId, {$pull: { volunteers: volunteerId }, $set: { selectedVolunteer: volunteerId }}, {new:true} )
+    .then(() => res.send({message: "Volunteer successfuly selected."}))
+    .catch((err) => res.send({message: "an error ocurred, sorry"}));
+});
+
 router.get("/:helpId", (req, res, next) => {
     const { helpId } = req.params
     HelpPost.findById(helpId)
