@@ -24,7 +24,7 @@ const userSchema = new Schema(
     },
     profilePicture: {
       type: String,
-      default: "/images/icon_person_.png"
+      default: "/images/profile-pic-default.svg"
     },
     skills: {
       type: String,
