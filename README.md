@@ -1,5 +1,5 @@
 # 4 Hands
-SLIDE1_IMG
+![image](https://github.com/LMC-Org/project-3-server/assets/102831536/c46b25c8-8ff6-435d-b9c7-7056669629cf)
 
 #### App which connects people needing help with those ready to lend a hand.
 
