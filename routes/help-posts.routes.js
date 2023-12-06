@@ -28,7 +28,7 @@ router.get("/:helpId", (req, res, next) => {
         .populate("selectedVolunteer")
         .populate("volunteers")
         .then((foundHelpPost) => {
-            const {title, volunteers, description,location,category, creator, helpImageUrl } = foundHelpPost
+            const {title, volunteers, description,location, creator, helpImageUrl } = foundHelpPost
             res.send({foundHelpPost})
         })
         .catch((err) => ("couldn't find help post", err))
@@ -54,7 +54,7 @@ router.get("/volunteered/:userId", (req, res, next) => {
 });
 
 router.post("/createhelp", (req, res, next) => {
-    const { title, location, description, helpImageUrl, creator, category } = req.body;
+    const { title, location, description, helpImageUrl, creator } = req.body;
     let newPost = null;
     //console.log("reqbody", req.body);
     HelpPost.create({
@@ -63,7 +63,6 @@ router.post("/createhelp", (req, res, next) => {
         description,
         helpImageUrl,
         creator,
-        category,
     })
     .then((createdHelp) => {
         newPost = createdHelp;
@@ -72,24 +71,17 @@ router.post("/createhelp", (req, res, next) => {
         //console.log("este es el req", createdHelp);
     })
     .then(() => {
-        console.log("NEWPOST ID: ", newPost);
+        //console.log("NEWPOST ID: ", newPost);
         return User.findByIdAndUpdate(creator, {$push: { helpPosts: newPost._id }, $inc: {tokens: - 1}}, {new: true})
+        // this mongoose query $inc increments specified field by specified value (in this case increments by -1)
     .then((res) => console.log("Updated user: ", res.helpPosts))
     .catch((err) => (err))
     })
-
-    // this mongoose query $inc increments specified field by specified value (in this case increments by -1)
-    /*  User.findByIdAndUpdate(creator, {
-        $inc: {tokens: 1},
-        $push: { helpPosts: newPost._id },
-    })
-    .then((res) => console.log("Updated user: ", res))
-    .catch((err) => console.log(err)); */
 });
 
 router.put("/edithelp/:helpId", (req, res, next) => {
     const {helpId} = req.params
-    const { title, location,description, helpImageUrl, category,selectedVolunteer} = req.body;
+    const { title, location,description, helpImageUrl, selectedVolunteer} = req.body;
     console.log(req.body, req.params);
 
     HelpPost.findByIdAndUpdate(helpId, {$set:{
@@ -97,9 +89,7 @@ router.put("/edithelp/:helpId", (req, res, next) => {
         location,
         description, 
         helpImageUrl, 
-        category,
         selectedVolunteer,
-        
         }
     })
     .then((updatedHelp) => {

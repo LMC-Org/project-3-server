@@ -1,10 +1,7 @@
 
 const { Schema, model } = require("mongoose");
 
-
-
 const testimonySchema = new Schema(
-
     {
         text: {
             type: String,

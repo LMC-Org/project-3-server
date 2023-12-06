@@ -44,7 +44,6 @@ const userSchema = new Schema(
     helpPosts: {
       type: [{ type: Schema.Types.ObjectId, ref: "HelpPost" }]
     }
-
   },
   {
     timestamps: true,

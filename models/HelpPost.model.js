@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
 
-
 const helpPostSchema = new Schema(
     {
         title: {
@@ -17,15 +16,11 @@ const helpPostSchema = new Schema(
         },
         helpImageUrl: {
             type: String,
+            default: "/images/help-default.jpg"
         },
         creator:  {
             type: Schema.Types.ObjectId,
             ref: "User"
-        },
-        category: {
-            type: String,
-            enum: ["learning", "transport", "tech", "house-chores", "furniture", "house-repairs", "chat-sessions"],
-            required: [true, "Please, choose a category."],
         },
         volunteers: {
             type: [{type: Schema.Types.ObjectId, ref: "User"}]
@@ -42,7 +37,6 @@ const helpPostSchema = new Schema(
         }
     },
     {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );
