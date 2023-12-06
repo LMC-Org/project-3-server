@@ -17,7 +17,10 @@ const testimonySchema = new Schema(
             required: true
         },
         creator: {type: Schema.Types.ObjectId, ref: "User" }
-    }
+    },
+	{
+		timestamps: true
+	}
 );
 
 const Testimony = model("Testimony", testimonySchema)

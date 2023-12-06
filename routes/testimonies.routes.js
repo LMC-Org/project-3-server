@@ -6,7 +6,7 @@ const Testimony = require("../models/Testimony.Model");
 
 // /testimonies/landing
 router.get("/landing", (req, res, next) => {
-    Testimony.find()
+    Testimony.find().sort({createdAt: -1})
         .populate("creator", "name profilePicture")
         .then((allTestimonies) => res.send(allTestimonies.slice(0, 4)))
         .catch((err) => console.error(err));
