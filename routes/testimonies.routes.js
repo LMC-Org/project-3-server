@@ -15,7 +15,7 @@ router.get("/landing", (req, res, next) => {
 
 router.get("/alltestimonies", (req, res, next) => {
     Testimony.find()
-        /* .populate("creator", "name profilePicture") */
+        .populate("creator", "name profilePicture") 
         .then((allTestimonies) => {
             console.log("allTesties:",allTestimonies)
             res.send(allTestimonies)
