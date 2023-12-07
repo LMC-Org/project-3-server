@@ -116,13 +116,11 @@ router.delete("/edithelp/:helpId", (req, res, next) => {
     const {helpId} = req.params
     HelpPost.findByIdAndDelete(helpId)
     .then((deletedHelp) => {
-        console.log("Help deleted:", deletedHelp)
-        res.send({message: "help deleted successfully"});
-        
+		console.log("Help deleted:", deletedHelp);
+		return User.findByIdAndUpdate(deletedHelp.creator, {$pull: { helpPosts: helpId }})
     })
+	.then(() => res.send({message: "help deleted successfully"}))
+	.catch((err) => console.error(err));	
 })
-
-
-
 
 module.exports = router;

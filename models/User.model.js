@@ -32,7 +32,6 @@ const userSchema = new Schema(
     },
     description: {
       type: String,
-      default: "Your description here!",
     },
     tokens: {
       type: Number,
