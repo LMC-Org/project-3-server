@@ -13,7 +13,7 @@ const cookieParser = require("cookie-parser");
 // unless the request is made from the same domain, by default express wont accept POST requests
 const cors = require("cors");
 
-const FRONTEND_URL = process.env.ORIGIN 
+const FRONTEND_URL = process.env.ORIGIN
 
 // Middleware configuration
 module.exports = (app) => {
@@ -25,8 +25,12 @@ module.exports = (app) => {
   app.use(
     cors({
       origin: [FRONTEND_URL],
+      origin: 'https://dainty-granita-d0a1eb.netlify.app',
+      optionsSuccessStatus: 200
+
     })
   );
+
 
   // In development environment the app logs
   app.use(logger("dev"));
