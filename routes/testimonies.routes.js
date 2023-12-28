@@ -8,7 +8,10 @@ const Testimony = require("../models/Testimony.model");
 router.get("/landing", (req, res, next) => {
     Testimony.find().sort({createdAt: -1})
         .populate("creator", "name profilePicture")
-        .then((allTestimonies) => res.send(allTestimonies.slice(0, 4)))
+        .then((allTestimonies) => {
+            /* console.log(allTestimonies) */
+            res.send(allTestimonies.slice(0, 4))
+        })
         .catch((err) => console.error(err));
 });
 
@@ -41,7 +44,7 @@ router.post("/createtestimony", (req, res, next) => {
     })
     .then((createdTestimony) => {
         res.json(createdTestimony)
-        console.log(createdTestimony);
+        /* console.log(createdTestimony); */
         console.log("este es el req",creator);
         })
         .catch((err)=>(err))
