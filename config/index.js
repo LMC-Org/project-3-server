@@ -24,12 +24,14 @@ module.exports = (app) => {
   // controls a very specific header to pass headers from the frontend
   app.use(
     cors({
-      origin: [FRONTEND_URL],
-      origin: 'https://dainty-granita-d0a1eb.netlify.app',
+      origin: ['http://localhost:5050', 'https://dainty-granita-d0a1eb.netlify.app'],
       optionsSuccessStatus: 200
 
     })
+    
   );
+ 
+
 
 
   // In development environment the app logs
