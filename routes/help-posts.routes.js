@@ -79,6 +79,7 @@ router.post("/createhelp", (req, res, next) => {
                 .then((res) => console.log("Updated user: ", res.helpPosts))
                 .catch((err) => (err))
         })
+        .catch((err) => ("couldn't create help post", err))
 });
 
 router.post("/upload", fileUploader.single("helpImageUrl"), (req, res, next) => {
