@@ -37,6 +37,7 @@ router.put("/edituser"/* ,fileUploader.single('profilePicture') */,(req, res, ne
 });
 
 router.post("/upload", fileUploader.single("profilePicture"), (req, res, next) => {
+
     // console.log("file is: ", req.file)
    
     if (!req.file) {
