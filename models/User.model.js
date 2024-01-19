@@ -42,7 +42,22 @@ const userSchema = new Schema(
     },
     helpPosts: {
       type: [{ type: Schema.Types.ObjectId, ref: "HelpPost" }]
-    }
+    },
+
+    hasNewNotifications: {
+      type: Boolean,
+      default: false
+    },
+    notifications: [{
+      category: {
+        type: Number,
+        default: null,
+      },
+      reference: {
+        type: { type: Schema.Types.ObjectId, ref: "HelpPost" }
+      }
+    }]
+    
   },
   {
     timestamps: true,
