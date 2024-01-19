@@ -19,7 +19,7 @@ router.get("/:userId", (req, res, next) => {
 });
 
 
-router.put("/edituser"/* ,fileUploader.single('profilePicture') */,(req, res, next) => {
+router.put("/edituser",(req, res, next) => {
 
     const { location, profilePicture, skills, description, id } = req.body;
     User.findByIdAndUpdate(id, {
