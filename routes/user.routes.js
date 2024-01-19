@@ -19,16 +19,16 @@ router.get("/:userId", (req, res, next) => {
 });
 
 
-router.put("/edituser",(req, res, next) => {
+router.put("/edituser"/* ,fileUploader.single('profilePicture') */,(req, res, next) => {
 
     const { location, profilePicture, skills, description, id } = req.body;
-    User.findByIdAndUpdate(id, {$set:{
+    User.findByIdAndUpdate(id, {
         location,
         profilePicture, 
         skills,
         description
-        }
-    })
+        
+    }, { new: true })
     .then((updatedUser) => {
         res.json(updatedUser)
         console.log("updateduser",updatedUser);
@@ -37,17 +37,18 @@ router.put("/edituser",(req, res, next) => {
 });
 
 router.post("/upload", fileUploader.single("profilePicture"), (req, res, next) => {
-    console.log("file is: ", req.file)
 
-   if (!req.file) {
-       next(new Error("No file uploaded!"));
-       return;
-   }
-
-   // Get the URL of the uploaded file and send it as a response.
-   // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
-
-   res.json({ fileUrl: req.file.path });
-});
+    // console.log("file is: ", req.file)
+   
+    if (!req.file) {
+      next(new Error("No file uploaded!"));
+      return;
+    }
+    
+    // Get the URL of the uploaded file and send it as a response.
+    // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
+    
+    res.json({ fileUrl: req.file.path });
+  });
 
 module.exports = router;
