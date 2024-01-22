@@ -58,37 +58,41 @@ router.post("/createhelp", (req, res, next) => {
     const { title, location, description, helpImageUrl, creator, category } = req.body;
     let newPost = null;
     //console.log("reqbody", req.body);
-   // First, update the user
-  User.findByIdAndUpdate(
-    creator,
-    { $inc: { tokens: -1 } },
-    { new: true }
-  )
-  .then(updatedUser => {
-    // Check if the user update was successful
-    if (!updatedUser) {
-        res.status(500).send("There was an error updating the user")
-      return Promise.reject('User update failed');
-    }
+    // First, update the user
+    User.findByIdAndUpdate(creator,
+        {
+            $inc: { tokens: - 1 }
+        },
+        { new: true })
+        .then(updatedUser => {
+            // Check if the user update was successful
+            if (!updatedUser) {
+                res.status(500).send("There was an error updating the user")
+                return Promise.reject('User update failed');
+            }
 
-    // If the user update was successful, create the help post
-    return HelpPost.create({
-      title,
-      location,
-      description,
-      helpImageUrl,
-      creator,
-      category
-    });
-  })
-  .then(createdHelp => {
-    // Send the created help post as a response
-    res.json(createdHelp);
-  })
-  .catch(error => {
-    // Handle any errors
-    next(error);
-  });
+            // If the user update was successful, create the help post
+            return HelpPost.create({
+                title,
+                location,
+                description,
+                helpImageUrl,
+                creator,
+                category
+            });
+        })
+        .then(createdHelp => {
+            // Send the created help post as a response
+            return User.findByIdAndUpdate(creator, {$push: { helpPosts: createdHelp._id }}, { new: true })
+            .then((createdHelp)=>{
+
+                res.json(createdHelp);
+            })
+        })
+        .catch(error => {
+            // Handle any errors
+            next(error);
+        });
 });
 /* router.post("/createhelp", (req, res, next) => {
     const { title, location, description, helpImageUrl, creator, category } = req.body;
@@ -119,7 +123,7 @@ router.post("/createhelp", (req, res, next) => {
 }); */
 
 router.post("/upload", fileUploader.single("helpImageUrl"), (req, res, next) => {
-     console.log("file is: ", req.file)
+    console.log("file is: ", req.file)
 
     if (!req.file) {
         next(new Error("No file uploaded!"));
@@ -133,17 +137,18 @@ router.post("/upload", fileUploader.single("helpImageUrl"), (req, res, next) => 
 });
 
 router.put("/edithelp/:helpId", (req, res, next) => {
-    const {helpId} = req.params
-    const { title, location,description, helpImageUrl, selectedVolunteer, category} = req.body;
+    const { helpId } = req.params
+    const { title, location, description, helpImageUrl, selectedVolunteer, category } = req.body;
     console.log(req.body, req.params);
 
-    HelpPost.findByIdAndUpdate(helpId, {$set:{
-        title, 
-        location,
-        description, 
-        helpImageUrl, 
-        selectedVolunteer,
-        category
+    HelpPost.findByIdAndUpdate(helpId, {
+        $set: {
+            title,
+            location,
+            description,
+            helpImageUrl,
+            selectedVolunteer,
+            category
         }
     })
         .then((updatedHelp) => {
