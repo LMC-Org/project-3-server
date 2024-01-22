@@ -24,7 +24,7 @@ module.exports = (app) => {
   // controls a very specific header to pass headers from the frontend
   app.use(
     cors({
-      origin: [FRONTEND_URL, "https://4-hands-4.netlify.app"],
+      origin: [FRONTEND_URL],
 
     })
     
