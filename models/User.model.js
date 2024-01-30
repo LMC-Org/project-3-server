@@ -61,8 +61,9 @@ const userSchema = new Schema(
 			default: true,
 		},
 		reference: {
-			type: { type: Schema.Types.ObjectId, ref: "HelpPost" }
-	}
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }
 	}]
 
   },

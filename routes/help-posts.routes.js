@@ -4,13 +4,28 @@ const HelpPost = require("../models/HelpPost.model");
 const User = require("../models/User.model");
 const fileUploader = require('../config/cloudinary.config');
 
+const CAT_NEW_VOLUNTEER = 1;
+const CAT_VOLUNTEER_SELECTED = 2;
+const CAT_NEW_TOKEN = 3;
+
 // ROUTES START WITH "/help-post"
 
 router.post("/addvolunteer", (req, res, next) => {
-    const { volunteerId, postId } = req.body;
+    const { volunteerId, postId, creatorId } = req.body;
 
+	// {new:true} returns the updated document, not the version before update.
     HelpPost.findByIdAndUpdate(postId, { $push: { volunteers: volunteerId } }, { new: true })
-        .then(() => res.send({ message: "Thank you for volunteering, the user has to contact you now" }))
+        .then((data) => {
+			console.log("/addvolunteer: ", data);
+			return (User.findByIdAndUpdate(creatorId, {
+					$push: { notifications: { category: CAT_NEW_VOLUNTEER, reference: postId }},
+					hasNewNotifications: true
+				}, {new: true}));
+			})
+			.then(data => {
+				console.log("/addvolunteer: ", data);
+				res.send({ message: "Thank you for volunteering, the user has to contact you now" })
+		})
         .catch((err) => res.send({ message: "some error ocurred, sorry" }));
 });
 
@@ -18,7 +33,13 @@ router.post("/selectvolunteer", (req, res, next) => {
     const { volunteerId, postId } = req.body;
 
     HelpPost.findByIdAndUpdate(postId, { $pull: { volunteers: volunteerId }, $set: { selectedVolunteer: volunteerId } }, { new: true })
-        .then(() => res.send({ message: "Volunteer successfuly selected." }))
+        .then(() => {
+			return (User.findByIdAndUpdate(volunteerId, {
+				$push: { notifications: { category: CAT_VOLUNTEER_SELECTED, reference: postId }},
+				hasNewNotifications: true
+			}, {new: true}));			
+		})
+		.then(() => res.send({ message: "Volunteer successfuly selected." }))
         .catch((err) => res.send({ message: "an error ocurred, sorry" }));
 });
 
