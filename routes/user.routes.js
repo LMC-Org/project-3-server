@@ -18,7 +18,6 @@ router.get("/:userId", (req, res, next) => {
         .catch((err) => console.log(err))
 });
 
-
 router.put("/edituser",(req, res, next) => {
 
     const { location, profilePicture, skills, description, id } = req.body;
@@ -49,6 +48,29 @@ router.post("/upload", fileUploader.single("profilePicture"), (req, res, next) =
     // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
     
     res.json({ fileUrl: req.file.path });
+  });
+
+  router.get("/check-notifications/:userId", (req, res, next) => {
+	const id = req.params.userId;
+	let notificationsResponse = false;
+    //console.log("check-notifications req.params: ",req.params, "id = ", id);
+	User.findById(id, "hasNewNotifications")
+		.then((response) => {
+			//console.log("response: ", response);
+			notificationsResponse = response.hasNewNotifications;
+			res.send({hasNewNotifications: response.hasNewNotifications})})
+		.catch((err) => res.status(500).send({error: err}));
+  });
+
+  router.get("/get-notifications/:userId", (req, res, next) => {
+	const id = req.params.userId;
+	User.findById(id, "notifications")
+		.then(response => {
+			console.log("get-notifications response: ", response);
+			res.send(response.notifications)
+		})
+		.then(() => User.findByIdAndUpdate(id, {hasNewNotifications: false}))
+		.catch((err) => res.status(500).send({error: err}));
   });
 
 module.exports = router;
