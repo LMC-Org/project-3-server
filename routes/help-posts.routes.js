@@ -10,6 +10,20 @@ const CAT_NEW_TOKEN = 3;
 
 // ROUTES START WITH "/help-post"
 
+// This fn adds Notification to specified user in our DB.
+//the $position: 0 puts the new item on top of array. It must come with $each.
+const addNotification = async (userId, notificationCategory, refPostId) => {
+	return (await User.findByIdAndUpdate(userId, {
+		$push: {
+			notifications: {
+				$each: [{ category: notificationCategory, reference: refPostId }],
+				$position: 0
+			}
+		},
+		hasNewNotifications: true
+	}, {new: true}));
+}
+
 router.post("/addvolunteer", (req, res, next) => {
     const { volunteerId, postId, creatorId } = req.body;
 
@@ -17,10 +31,7 @@ router.post("/addvolunteer", (req, res, next) => {
     HelpPost.findByIdAndUpdate(postId, { $push: { volunteers: volunteerId } }, { new: true })
         .then((data) => {
 			console.log("/addvolunteer: ", data);
-			return (User.findByIdAndUpdate(creatorId, {
-					$push: { notifications: { category: CAT_NEW_VOLUNTEER, reference: postId }},
-					hasNewNotifications: true
-				}, {new: true}));
+			return (addNotification(creatorId, CAT_NEW_VOLUNTEER, postId));
 			})
 			.then(data => {
 				console.log("/addvolunteer: ", data);
@@ -34,10 +45,7 @@ router.post("/selectvolunteer", (req, res, next) => {
 
     HelpPost.findByIdAndUpdate(postId, { $pull: { volunteers: volunteerId }, $set: { selectedVolunteer: volunteerId } }, { new: true })
         .then(() => {
-			return (User.findByIdAndUpdate(volunteerId, {
-				$push: { notifications: { category: CAT_VOLUNTEER_SELECTED, reference: postId }},
-				hasNewNotifications: true
-			}, {new: true}));			
+			return (addNotification(volunteerId, CAT_VOLUNTEER_SELECTED, postId)); 		
 		})
 		.then(() => res.send({ message: "Volunteer successfuly selected." }))
         .catch((err) => res.send({ message: "an error ocurred, sorry" }));
@@ -184,6 +192,7 @@ router.put("/setcompleted", (req, res, next) => {
     console.log("SETCOMPLETED: volunteerID postId: ", volunteerId, postId);
     HelpPost.findByIdAndUpdate(postId, { $set: { isCompleted: true } })
         .then(() => User.findByIdAndUpdate(volunteerId, { $inc: { tokens: 1 } }, { new: true }))
+		.then(() => addNotification(volunteerId, CAT_NEW_TOKEN, postId))
         .then((foundUser) => console.log("foundUser: ", foundUser))
         .then(() => res.send({ message: "Successfully completed!" }))
         .catch((err) => {
