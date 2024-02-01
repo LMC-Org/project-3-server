@@ -9,7 +9,10 @@ router.get("/:userId", (req, res, next) => {
     console.log(req.params);
 
     User.findById(id)
-        .populate("helpPosts")
+        .populate({
+            path: "helpPosts",
+            options: {sort: {"createdAt": -1}}
+        })
         .then((user) => {
             const { tokens, helpPosts, _id, email, phone, name, profilePicture, testimonies, description, location, skills } = user;
             res.send({ tokens, helpPosts, _id, email, phone, name, profilePicture, testimonies, description, location, skills });
