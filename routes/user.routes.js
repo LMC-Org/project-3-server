@@ -67,13 +67,24 @@ router.post("/upload", fileUploader.single("profilePicture"), (req, res, next) =
 
   router.get("/get-notifications/:userId", (req, res, next) => {
 	const id = req.params.userId;
-	User.findById(id, "notifications")
+	User.findById(id, "notifications").populate({path: 'notifications.reference', model: 'HelpPost', select: ('title creator'), populate: {path: 'creator', select: 'name -_id'}})
 		.then(response => {
-			console.log("get-notifications response: ", response);
+			// console.log("get-notifications response: ", response);
 			res.send(response.notifications)
 		})
 		.then(() => User.findByIdAndUpdate(id, {hasNewNotifications: false}))
 		.catch((err) => res.status(500).send({error: err}));
   });
+
+  router.patch("/notification-set-as-read", (req, res, next) => {
+	const { userId, notifIndex } = req.body;
+	console.log("set as read - req.body: ", req.body, userId, notifIndex);
+	User.findByIdAndUpdate(userId, { $set : { [`notifications.${notifIndex}.isUnread`]: false }}, { new: true } )
+	.then((updated) => {
+		console.log("set as read return: ", updated );
+		res.status(200).send("OK");
+	})
+	.catch(err => res.status(500).send(err));
+  })
 
 module.exports = router;
