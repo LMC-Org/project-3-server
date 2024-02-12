@@ -70,7 +70,6 @@ router.post("/upload", fileUploader.single("profilePicture"), (req, res, next) =
 
 	User.findById(id, "notifications").populate({path: 'notifications.reference', model: 'HelpPost', select: ('title creator'), populate: {path: 'creator', select: 'name -_id'}})
 		.then(response => {
-			// console.log("get-notifications response: ", response);
 			res.send(response.notifications)
 		})
 		.then(() => User.findByIdAndUpdate(id, {hasNewNotifications: false}))
@@ -83,7 +82,7 @@ router.post("/upload", fileUploader.single("profilePicture"), (req, res, next) =
     const options = { new: true };
     
     User.findByIdAndUpdate(userId, updateParams, options )
-    .then(() => res.status(200))
+    .then(() => res.status(200).send("notification-set-as-read: OK"))
     .catch(err => res.status(500).send(err));
   });
 
